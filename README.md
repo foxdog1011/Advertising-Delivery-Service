@@ -58,7 +58,7 @@
 <h2 id="使用方式">使用方式</h2>
 <ol>
 <li>git clone<br>
-<a href="https://github.com/your/repository.git">https://github.com/your/repository.git</a></li>
+<a href="https://github.com/foxdog1011/Backend_work.git">https://github.com/foxdog1011/Backend_work.git</a></li>
 <li>部署 Docker 容器:<br>
 docker-compose up --build -d</li>
 <li>使用 API:<br>
