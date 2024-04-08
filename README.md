@@ -12,6 +12,7 @@
 <li>使用 Golang 開發，具有高性能和低內存消耗的特性。</li>
 <li>使用 Docker 容器化部署，便於開發、測試和部署。</li>
 <li>使用 RESTful API 提供服務。</li>
+<li>使用 Redis 進行優化，提高廣告檢索的效率</li>
 </ul>
 <h2 id="api-使用方法">API 使用方法</h2>
 <p>Admin API<br>
