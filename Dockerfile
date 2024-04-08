@@ -1,28 +1,28 @@
-# 阶段 1: 构建环境
-# 使用官方的 Golang 镜像作为构建环境
+# 階段 1: 構建環境
+# 使用官方的 Golang 鏡像作為構建環境
 FROM golang:1.18 as builder
-# 设置工作目录，这是后续命令的执行上下文
+# 設置工作目錄，這是後續命令的執行上下文
 WORKDIR /app
-# 将当前目录下的所有文件复制到容器的 /app 目录下
+# 將當前目錄下的所有文件複製到容器的 /app 目錄下
 COPY . .
-# 下载依赖项
+# 下載依賴項
 RUN go mod tidy
-# 静态编译 Go 应用程序，禁用 CGO 并设置目标操作系统和架构
+# 靜態編譯 Go 應用程序，禁用 CGO 並設置目標操作系統和架構
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
 
-# 阶段 2: 运行环境
-# 使用轻量级的 Alpine Linux 镜像作为运行环境
+# 階段 2: 運行環境
+# 使用輕量級的 Alpine Linux 鏡像作為運行環境
 FROM alpine:latest
-# 为了确保应用程序的兼容性，更新 Alpine 的包索引并安装 libc6-compat
-# libc6-compat 提供了对 glibc 库的兼容，一些 Go 应用可能需要这个
+# 為了確保應用程序的兼容性，更新 Alpine 的包索引並安裝 libc6-compat
+# libc6-compat 提供了對 glibc 库的兼容，一些 Go 應用可能需要這個
 RUN apk update && apk add --no-cache libc6-compat
-# 设置工作目录
+# 設置工作目錄
 WORKDIR /root/
-# 从构建阶段复制编译好的 Go 可执行文件到当前工作目录
+# 從構建階段複製編譯好的 Go 可執行文件到當前工作目錄
 COPY --from=builder /app/main .
-# 为可执行文件设置执行权限
+# 為可執行文件設置執行權限
 RUN chmod +x ./main
-# 声明容器运行时应监听的端口
+# 宣告容器運行時應監聽的端口
 EXPOSE 8080
-# 配置容器启动后执行的命令
+# 配置容器啟動後執行的命令
 CMD ["./main"]

@@ -45,8 +45,6 @@ func CreateAd(db *sql.DB, rdb cache.RedisClientInterface) gin.HandlerFunc {
 			Conditions: req.Conditions,
 		}
 
-		// 省略条件验证...
-
 		tx, err := db.Begin()
 		if err != nil {
 			log.Printf("Failed to start transaction: %v", err)
@@ -65,13 +63,13 @@ func CreateAd(db *sql.DB, rdb cache.RedisClientInterface) gin.HandlerFunc {
 			return
 		}
 
-		// 示例：使用 Redis 缓存广告标题
+		// 示例：使用 Redis 缓存廣告標題
 		ctx := context.Background()
-		// 调用 rdb.Set 并获取结果
-		// 直接检查从 Set 方法返回的 error
+		// 调用 rdb.Set 並獲取结果
+		// 直接检查從 Set 方法返回的 error
 		if err := rdb.Set(ctx, "ad_title:"+newAd.Title, newAd.Title, 0); err != nil {
 			log.Printf("Failed to cache ad title in Redis: %v", err)
-			// 可以选择记录错误，但不一定要中断整个流程
+			// 可以選擇記錄错误，但不一定要中断整个流程
 		}
 
 		if err := tx.Commit(); err != nil {

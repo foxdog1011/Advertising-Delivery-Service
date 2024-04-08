@@ -17,12 +17,12 @@ import (
 
 func ListAds(db *sql.DB, rdb cache.RedisClientInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 构建缓存键
+		// 構建缓存键
 		cacheKey := "ads_list:" + c.Request.URL.RawQuery // 使用完整的查询字符串作为缓存键的一部分
-		// 尝试从 Redis 中获取缓存的广告列表
+		// 嘗試從 Redis 中獲取缓存的廣告列表
 		cachedAds, err := rdb.Get(context.Background(), cacheKey)
 		if err == nil {
-			// 如果成功获取到缓存，则直接返回缓存的结果
+			// 如果成功獲取到缓存，則直接返回缓存的结果
 			c.Header("Content-Type", "application/json")
 			c.String(http.StatusOK, cachedAds)
 			return
@@ -36,7 +36,7 @@ func ListAds(db *sql.DB, rdb cache.RedisClientInterface) gin.HandlerFunc {
 
 		query := "SELECT adid, title, startat, endat FROM Advertisements WHERE startat <= $1 AND endat >= $2"
 
-		// 处理多选条件：国家、平台（性别和年龄在这个示例中被假定为单选，如需要支持多选，可按照国家的处理方式进行调整）
+		// 處理多选條件：国家、平台（性别和年龄在这个示例中被假定為单選，如需要支持多選，可按照国家的處理方式进行调整）
 		if countries, ok := c.GetQueryArray("country"); ok && len(countries) > 0 {
 			query += " AND country = ANY($" + strconv.Itoa(len(params)+1) + ")"
 			params = append(params, pq.Array(countries))
@@ -46,7 +46,7 @@ func ListAds(db *sql.DB, rdb cache.RedisClientInterface) gin.HandlerFunc {
 			params = append(params, pq.Array(platforms))
 		}
 
-		// 添加年龄和性别条件，假设为单选
+		// 添加年龄和性别條件，假设為单选
 		if age, ok := c.GetQuery("age"); ok {
 			query += " AND age = $" + strconv.Itoa(len(params)+1)
 			params = append(params, age)
@@ -62,7 +62,7 @@ func ListAds(db *sql.DB, rdb cache.RedisClientInterface) gin.HandlerFunc {
 
 		rows, err := db.Query(query, params...)
 		if err != nil {
-			log.Printf("Failed to list ads: %v", err) // 增加错误日志
+			log.Printf("Failed to list ads: %v", err) // 增加错误日誌
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to list ads"})
 			return
 		}
@@ -73,28 +73,28 @@ func ListAds(db *sql.DB, rdb cache.RedisClientInterface) gin.HandlerFunc {
 		for rows.Next() {
 			var ad models.Ad
 			if err := rows.Scan(&ad.ID, &ad.Title, &ad.StartAt, &ad.EndAt); err != nil {
-				log.Printf("Failed to scan ad: %v", err) // 增加错误日志
+				log.Printf("Failed to scan ad: %v", err) // 增加错误日誌
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to scan ad"})
 				return
 			}
 			ads = append(ads, ad)
 		}
-		// 将广告列表序列化为 JSON
+		// 将廣告列表序列化為 JSON
 		adsJSON, err := json.Marshal(gin.H{"items": ads})
 		if err != nil {
 			log.Printf("Failed to serialize ads: %v", err)
-			// 处理错误...
+			// 處理错误...
 		}
 
-		// 将序列化后的 JSON 字符串缓存到 Redis 中，设置适当的过期时间，例如 30 分钟
+		// 将序列化后的 JSON 字符串缓存到 Redis 中，设置適當的過期时间，例如 30 分鐘
 		err = rdb.Set(context.Background(), cacheKey, string(adsJSON), 30*time.Minute)
 		if err != nil {
 			log.Printf("Failed to cache ads list in Redis: %v", err)
-			// 可以选择记录错误，但不一定要中断整个流程
+			// 可以選擇记錄错误，但不一定要中断整個流程
 		}
 
 		// 返回查询结果
-		c.JSON(http.StatusOK, gin.H{"items": ads}) // 统一响应结构
+		c.JSON(http.StatusOK, gin.H{"items": ads})
 	}
 }
 func min(a, b int) int {

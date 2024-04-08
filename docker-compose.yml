@@ -1,34 +1,34 @@
 version: '3.8'
 services:
   web:
-    build: .  # 指示 Docker Compose 在当前目录下查找 Dockerfile 并构建 web 服务的镜像
+    build: .  # 指示 Docker Compose 在當前目录下查找 Dockerfile 并構建 web 服务的镜像
     ports:
-      - "8090:8080"  # 将容器内的 8080 端口映射到宿主机的 8090 端口
+      - "8090:8080"  # 將容器內的 8080 端口映射到宿主機的 8090 端口
     depends_on:
       - db
-      - cache  # 确保在 web 服务启动前 db 和 cache 服务已经在运行
+      - cache  # 確保在 web 服務啟動前 db 和 cache 服務已經在運行
     environment:
-      DB_HOST: db  # 环境变量，供应用程序连接到数据库和缓存服务
+      DB_HOST: db  # 環境變量，供應用程序連接到資料庫和快取服務
       DB_USER: user
       DB_PASSWORD: password
       DB_NAME: mydatabase
-      REDIS_URL: cache:6379  # 指向 Redis 服务的 URL
+      REDIS_URL: cache:6379  # 指向 Redis 服務的 URL
 
   db:
-    image: postgres:latest  # 使用最新版本的 PostgreSQL 官方镜像
+    image: postgres:latest  # 使用最新版本的 PostgreSQL 官方鏡像
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase  # 初始化数据库的环境变量
+      POSTGRES_DB: mydatabase  # 初始化資料庫的環境變量
     ports:
-      - "5432:5432"  # 将容器的 5432 端口映射到宿主机的 5432 端口
+      - "5432:5432"  # 將容器的 5432 端口映射到宿主機的 5432 端口
     volumes:
-      - pgdata:/var/lib/postgresql/data  # 持久化 PostgreSQL 数据
+      - pgdata:/var/lib/postgresql/data  # 持久化 PostgreSQL 資料
 
   cache:
-    image: redis:latest  # 使用最新版本的 Redis 官方镜像
+    image: redis:latest  # 使用最新版本的 Redis 官方鏡像
     ports:
-      - "6379:6379"  # 将容器的 6379 端口映射到宿主机的 6379 端口
+      - "6379:6379"  # 將容器的 6379 端口映射到宿主機的 6379 端口
 
 volumes:
-  pgdata:  # 定义一个名为 pgdata 的卷，用于 PostgreSQL 数据的持久化
+  pgdata:  # 定義一個名為 pgdata 的卷，用於 PostgreSQL 資料的持久化
