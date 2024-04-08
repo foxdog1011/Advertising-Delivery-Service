@@ -45,8 +45,8 @@
 <h5 id="單元測試">單元測試</h5>
 <ul>
 <li>使用 Golang 內建的測試框架進行單元測試。</li>
-<li>對每個服務的 API 進行單元測試，確保功能的正確性和穩定性。</li>
-<li></li>
+<li>對每個服務的 API 進行單元測試，確保功能的正確性和穩定性。<br>
+-<img src="https://github.com/foxdog1011/Backend_work/blob/master/Untitled1.png?raw=true" alt="enter image description here"></li>
 </ul>
 <h2 id="設計上的選擇">設計上的選擇</h2>
 <ul>
